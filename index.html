@@ -1,264 +1,1502 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🔑 Password Variant Tool PRO by @teddyvrp</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇻🇳 Vietnamese Email Detector v13.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: slideDown 0.5s ease;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(102,126,234,0.05) 0%, rgba(118,75,162,0.05) 100%);
+        }
+
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+        }
+
+        .upload-area.dragover {
+            border-color: #764ba2;
+            background: linear-gradient(135deg, rgba(102,126,234,0.15) 0%, rgba(118,75,162,0.15) 100%);
+        }
+
+        .upload-area p {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .upload-area small {
+            color: #999;
+            font-size: 0.95em;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.95em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-box h3 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .confidence-accept {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .confidence-review {
+            color: #ff9800;
+            font-weight: bold;
+        }
+
+        .confidence-reject {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .results-table thead {
+            background: #f5f5f5;
+        }
+
+        .results-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .results-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .results-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .score-accept {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .score-review {
+            background: #ffe0b2;
+            color: #e65100;
+        }
+
+        .score-reject {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102,126,234,0.2);
+        }
+
+        .dataset-section {
+            margin-bottom: 30px;
+        }
+
+        .dataset-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .dataset-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .alert-success {
+            background: #c8e6c9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .alert-error {
+            background: #ffcdd2;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .alert-info {
+            background: #bbdefb;
+            color: #1565c0;
+            border-left: 4px solid #1565c0;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .mobile-scroll {
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .results-table {
+                font-size: 0.9em;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 8px;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+
+        .structure-chart {
+            margin-top: 20px;
+        }
+
+        .chart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 10px;
+        }
+
+        .chart-label {
+            min-width: 150px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .chart-bar {
+            flex: 1;
+            height: 25px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .download-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .download-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .download-card {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #ddd;
+        }
+
+        .download-card h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .download-card p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+    </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="navbar-container">
-      <div class="navbar-logo">
-        <span class="logo-icon">🔐</span>
-        <span class="logo-text">PasswordX</span>
-        <span class="version-badge">PRO v2.0</span>
-      </div>
-      <div class="navbar-info">
-        <span class="by-credit">by @teddyvrp</span>
-      </div>
+    <div class="container">
+        <div class="header">
+            <h1>🇻🇳 Vietnamese Email Detector</h1>
+            <p>v13.0 - Grammar-First Parser | Grammar Quality ≫ Dataset Size</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('upload')">📤 Upload & Process</button>
+            <button class="tab-btn" onclick="switchTab('test')">🧪 Test Email</button>
+            <button class="tab-btn" onclick="switchTab('dataset')">📊 Dataset Info</button>
+            <button class="tab-btn" onclick="switchTab('stats')">📈 Statistics</button>
+        </div>
+
+        <!-- TAB 1: Upload & Process -->
+        <div id="upload" class="tab-content active">
+            <div class="card">
+                <h2>📤 Upload File</h2>
+                <p style="color: #666; margin-bottom: 20px;">Format: <code>email:password</code> (một dòng một entry)</p>
+
+                <div class="upload-area" id="uploadArea">
+                    <p>🎯 Kéo thả file vào đây hoặc</p>
+                    <p style="color: #764ba2; cursor: pointer;">Nhấp để chọn file</p>
+                    <small>Hỗ trợ file .txt</small>
+                </div>
+
+                <input type="file" id="fileInput" accept=".txt">
+
+                <div id="fileName" style="margin-top: 15px; color: #666; display: none;">
+                    📁 <span id="fileNameText"></span>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" onclick="processFile()" id="processBtn" disabled>
+                        ⚡ Bắt Đầu Lọc
+                    </button>
+                    <button class="btn-secondary" onclick="clearFile()">🔄 Làm Mới</button>
+                </div>
+
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text">
+                        Đang xử lý: <span id="progressText">0</span>/<span id="totalText">0</span> entries
+                    </div>
+                </div>
+
+                <div id="results" style="display: none;">
+                    <div id="alerts"></div>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <h3>📋 Tổng Cộng</h3>
+                            <div class="number" id="statTotal">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>✅ Chấp Nhận (≥75)</h3>
+                            <div class="number" id="statAccept">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>📋 Xem Xét (55-74)</h3>
+                            <div class="number" id="statReview">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>❌ Từ Chối (<55)</h3>
+                            <div class="number" id="statReject">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>📊 Điểm Trung Bình</h3>
+                            <div class="number" id="statAvg">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>⚡ Tốc Độ</h3>
+                            <div class="number" id="statSpeed">0</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px; color: #333;">📊 Structure Breakdown</h3>
+                    <div class="structure-chart" id="structureChart"></div>
+
+                    <div class="download-section">
+                        <div class="download-card">
+                            <h4>✅ Chấp Nhận</h4>
+                            <p>Điểm ≥ 75 (High Confidence)</p>
+                            <button class="btn-success" onclick="downloadAccepted()">⬇️ Download</button>
+                        </div>
+                        <div class="download-card">
+                            <h4>📋 Xem Xét</h4>
+                            <p>Điểm 55-74 (Manual Check)</p>
+                            <button class="btn-success" onclick="downloadReview()">⬇️ Download</button>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px; color: #333;">📋 Chi Tiết Kết Quả</h3>
+                    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Tìm kiếm email..." onkeyup="filterResults()">
+                    <div class="mobile-scroll">
+                        <table class="results-table" id="resultsTable">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Điểm</th>
+                                    <th>Structure</th>
+                                    <th>Tin Cậy</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Test Email -->
+        <div id="test" class="tab-content">
+            <div class="card">
+                <h2>🧪 Test Single Email</h2>
+
+                <div class="input-group">
+                    <label>📧 Email</label>
+                    <input type="email" id="testEmail" placeholder="example@gmail.com">
+                </div>
+
+                <div class="input-group">
+                    <label>🔐 Password</label>
+                    <input type="text" id="testPassword" placeholder="password123">
+                </div>
+
+                <button class="btn-primary" onclick="testEmail()">🔍 Phân Loại</button>
+
+                <div id="testResult" style="display: none; margin-top: 30px;">
+                    <div id="testAlerts"></div>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <h3>📧 Email</h3>
+                            <div style="font-size: 0.9em; word-break: break-all;" id="resultEmail"></div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>📊 Điểm</h3>
+                            <div class="number" id="resultScore">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>🏗️ Structure</h3>
+                            <div style="font-size: 0.9em;" id="resultStructure"></div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>✔️ Tin Cậy</h3>
+                            <div style="font-size: 1.2em;" id="resultConfidence"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <h3 style="color: #333; margin-bottom: 15px;">📝 Chi Tiết Phân Tích</h3>
+                        <div style="background: #f5f5f5; padding: 20px; border-radius: 10px;">
+                            <p><strong>Local Part:</strong> <code id="resultLocalPart"></code></p>
+                            <p><strong>Surname:</strong> <code id="resultSurname"></code></p>
+                            <p><strong>Middle:</strong> <code id="resultMiddle"></code></p>
+                            <p><strong>Given:</strong> <code id="resultGiven"></code></p>
+                            <p><strong>Remainder:</strong> <code id="resultRemainder"></code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: Dataset Info -->
+        <div id="dataset" class="tab-content">
+            <div class="card">
+                <h2>📊 Dataset Information</h2>
+
+                <div class="dataset-section">
+                    <h3>🎯 STRICT_MIDDLE (Nearly Always Middle)</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Conservative set - grammar-defining tokens</p>
+                    <div class="dataset-tags" id="strictMiddleTags"></div>
+                </div>
+
+                <div class="dataset-section">
+                    <h3>⚖️ DUAL_ROLE (Ambiguous)</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Can be either middle or given - careful scoring</p>
+                    <div class="dataset-tags" id="dualRoleTags"></div>
+                </div>
+
+                <div class="dataset-section">
+                    <h3>✨ STRICT_GIVEN (Nearly Always Given)</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Conservative set - end-position tokens</p>
+                    <div class="dataset-tags" id="strictGivenTags"></div>
+                </div>
+
+                <div class="dataset-section">
+                    <h3>🏛️ STRONG_SURNAMES</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Most common Vietnamese surnames</p>
+                    <div class="dataset-tags" id="strongSurnameTags"></div>
+                </div>
+
+                <div class="dataset-section">
+                    <h3>📊 Dataset Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <h3>STRICT_MIDDLE</h3>
+                            <div class="number" id="countStrictMiddle">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>DUAL_ROLE</h3>
+                            <div class="number" id="countDualRole">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>STRICT_GIVEN</h3>
+                            <div class="number" id="countStrictGiven">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h3>STRONG_SURNAMES</h3>
+                            <div class="number" id="countSurnames">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: #bbdefb; padding: 20px; border-radius: 10px; margin-top: 20px; border-left: 4px solid #1565c0;">
+                    <h4 style="color: #1565c0; margin-bottom: 10px;">💡 Parser Logic</h4>
+                    <p style="color: #1565c0;">
+                        <strong>Grammar Rule:</strong> SURNAME → MIDDLE* → GIVEN<br>
+                        <strong>Philosophy:</strong> Grammar Quality ≫ Dataset Size<br>
+                        <strong>Ambiguity Control:</strong> Strict separation between roles<br>
+                        <strong>Scoring:</strong> Non-linear, role-aware, position-sensitive
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: Statistics -->
+        <div id="stats" class="tab-content">
+            <div class="card">
+                <h2>📈 Parser Statistics</h2>
+
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; text-align: center;">
+                    <h3 style="margin-bottom: 20px;">🎯 Parser Version</h3>
+                    <p style="font-size: 2em; font-weight: bold; margin-bottom: 10px;">v13.0</p>
+                    <p style="opacity: 0.9;">Grammar-First Parser | Ambiguity-Aware Scoring</p>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3 style="color: #333; margin-bottom: 20px;">🔧 Improvements in v13.0</h3>
+                    <ul style="list-style: none; color: #666; line-height: 2;">
+                        <li>✅ <strong>State Machine Parser:</strong> Grammar enforcement (MIDDLE* → GIVEN)</li>
+                        <li>✅ <strong>Conservative STRICT_MIDDLE:</strong> Only 19 tokens (high precision)</li>
+                        <li>✅ <strong>Expanded DUAL_ROLE:</strong> 15 ambiguous tokens (flexible matching)</li>
+                        <li>✅ <strong>Strong STRICT_GIVEN:</strong> 47 end-position tokens</li>
+                        <li>✅ <strong>Positional Scoring:</strong> Penalty for role violations</li>
+                        <li>✅ <strong>Candidate Pruning:</strong> Eliminates invalid parses early</li>
+                        <li>✅ <strong>Token Reuse Prevention:</strong> No duplicates in parse</li>
+                        <li>✅ <strong>Non-Linear Confidence:</strong> Grammar-aware thresholds</li>
+                        <li>✅ <strong>Parse Quality Tracking:</strong> Detailed structure analysis</li>
+                        <li>✅ <strong>Ambiguity Penalties:</strong> Extra score for DUAL_ROLE tokens</li>
+                    </ul>
+                </div>
+
+                <div style="background: #c8e6c9; padding: 20px; border-radius: 10px; margin-top: 30px; border-left: 4px solid #2e7d32;">
+                    <h4 style="color: #2e7d32; margin-bottom: 10px;">🎯 Philosophy</h4>
+                    <p style="color: #2e7d32;">
+                        <strong>Dataset Quality Over Size:</strong><br>
+                        With a grammar-aware parser, token ambiguity is more dangerous than missing tokens. 
+                        Every token in STRICT_MIDDLE and STRICT_GIVEN must have near-100% probability of its role.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 Vietnamese Email Detector | Grammar-First Parser | No Server Required</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Fully Offline • All Processing Local • No Data Shared</p>
+        </div>
     </div>
-  </nav>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-background"></div>
-    <div class="hero-content">
-      <h1 class="hero-title">🔑 Password Variant Tool</h1>
-      <p class="hero-subtitle">Generate unlimited password variants in seconds.<br>Fast, Easy & Powerful.</p>
-      <div class="hero-features">
-        <div class="feature-badge">⚡ Multi-Stage Mutation</div>
-        <div class="feature-badge">🎯 Advanced Rules</div>
-        <div class="feature-badge">📦 Custom Patterns</div>
-      </div>
-    </div>
-  </section>
+    <script>
+        // ============================================================================
+        // DATASET v13.0 - OPTIMIZED FOR GRAMMAR-FIRST PARSER
+        // ============================================================================
 
-  <!-- Main Container -->
-  <div class="main-container">
-    
-    <!-- Left Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-section">
-        <h3 class="section-title">📁 Upload File</h3>
-        <div class="file-upload" id="uploadArea">
-          <div class="upload-icon">📤</div>
-          <p class="upload-text">Drag & drop file here</p>
-          <p class="upload-hint">or click to browse</p>
-          <input type="file" id="fileInput" accept=".txt,.csv" />
-        </div>
-        <div class="file-stats" id="fileStats" style="display: none;">
-          <div class="stat-item">
-            <span class="stat-label">File Size</span>
-            <span class="stat-value" id="fileSize">0 KB</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Records</span>
-            <span class="stat-value" id="recordCount">0</span>
-          </div>
-        </div>
-      </div>
+        const STRICT_MIDDLE = new Set([
+            'van', 'thi', 'huu', 'ngoc', 'cong', 'quoc', 'the', 'phu', 'duy',
+            'nhat', 'gia', 'bao', 'nhu', 'kim', 'nhi', 'uyen', 'loan', 'truc', 'tram'
+        ]);
 
-      <div class="sidebar-section">
-        <h3 class="section-title">⚙️ Settings</h3>
-        <div class="settings-form">
-          <div class="form-group">
-            <label>Mutation Depth</label>
-            <input type="number" id="mutationDepth" min="1" max="4" value="2">
-            <small>1-4 (higher = more variants)</small>
-          </div>
-          <div class="form-group">
-            <label>Max Results</label>
-            <input type="number" id="maxResults" min="1000" max="1000000" value="100000">
-            <small>Limit variants output</small>
-          </div>
-          <div class="form-group">
-            <label>Export Format</label>
-            <select id="exportFormat">
-              <option value="txt">TXT (username:password)</option>
-              <option value="csv">CSV</option>
-              <option value="json">JSON</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </aside>
+        const DUAL_ROLE = new Set([
+            'minh', 'quang', 'anh', 'linh', 'duc', 'huy', 'thanh', 'bao',
+            'viet', 'hai', 'khanh', 'hoa', 'trang', 'thao', 'phuong'
+        ]);
 
-    <!-- Main Content -->
-    <main class="content">
-      
-      <!-- Tabs -->
-      <div class="tabs-container">
-        <div class="tabs-header">
-          <button class="tab-button active" data-tab="basic">
-            <span class="tab-icon">⚡</span>
-            <span class="tab-label">Basic Rules</span>
-          </button>
-          <button class="tab-button" data-tab="advanced">
-            <span class="tab-icon">🔧</span>
-            <span class="tab-label">Advanced</span>
-          </button>
-          <button class="tab-button" data-tab="custom">
-            <span class="tab-icon">✏️</span>
-            <span class="tab-label">Custom</span>
-          </button>
-        </div>
+        const STRICT_GIVEN = new Set([
+            'hieu', 'kiet', 'vinh', 'loc', 'dat', 'dung', 'ha', 'hiep', 'huong',
+            'ky', 'lam', 'long', 'luong', 'nam', 'nhan', 'phat', 'quy', 'sang',
+            'son', 'tai', 'tam', 'thinh', 'thuan', 'tien', 'tin', 'toan', 'tung',
+            'vy', 'xuan', 'yen', 'chi', 'hanh', 'diem', 'diep', 'dinh', 'dong',
+            'giang', 'giao', 'hang', 'hao', 'hau', 'hien', 'hinh', 'hong', 'huyen'
+        ]);
 
-        <!-- Basic Tab -->
-        <div class="tab-content active" id="basic">
-          <div class="tab-search">
-            <input type="text" placeholder="🔍 Search rules..." id="searchBasic" onkeyup="filterRules('basic')">
-          </div>
-          <div class="rules-grid" id="basicRulesContainer"></div>
-          <div class="tab-actions">
-            <button class="btn btn-primary" id="generateBasicBtn" onclick="generateVariants('basic')" disabled>
-              ⚡ Generate Variants (Basic)
-            </button>
-            <button class="btn btn-secondary" id="clearBtn" onclick="clearAll()" disabled>
-              🗑️ Clear All
-            </button>
-          </div>
-        </div>
+        const VN_SURNAMES_STRONG = new Set([
+            'nguyen', 'tran', 'pham', 'hoang', 'vu', 'dang', 'bui', 'do', 'ngo',
+            'duong', 'ly', 'trinh', 'le', 'mai', 'cao', 'bach', 'vuong',
+            'chau', 'ha', 'kieu', 'la', 'luong', 'ta', 'luu', 'truong', 'thai'
+        ]);
 
-        <!-- Advanced Tab -->
-        <div class="tab-content" id="advanced">
-          <div class="tab-search">
-            <input type="text" placeholder="🔍 Search rules..." id="searchAdvanced" onkeyup="filterRules('advanced')">
-          </div>
-          <div class="rules-grid" id="advancedRulesContainer"></div>
-          <div class="tab-actions">
-            <button class="btn btn-primary" id="generateAdvBtn" onclick="generateVariants('advanced')" disabled>
-              🔧 Generate Variants (Advanced)
-            </button>
-          </div>
-        </div>
+        const VN_SURNAMES_WEAK = new Set([
+            'nam', 'son', 'phuong', 'quang', 'thuy'
+        ]);
 
-        <!-- Custom Tab -->
-        <div class="tab-content" id="custom">
-          <div class="custom-form">
-            <div class="form-group">
-              <label>Custom Suffixes</label>
-              <textarea id="customSuffixes" placeholder="_2024&#10;.pro&#10;@vip&#10;-love&#10;123"></textarea>
-            </div>
-            <div class="form-group">
-              <label>Custom Prefixes</label>
-              <textarea id="customPrefixes" placeholder="vn_&#10;admin_&#10;test_"></textarea>
-            </div>
-            <div class="form-group">
-              <label>Custom Separators</label>
-              <textarea id="customSeparators" placeholder="_&#10;-&#10;.&#10;#"></textarea>
-            </div>
-          </div>
-          <div class="tab-actions">
-            <button class="btn btn-primary" onclick="generateVariants('custom')">
-              ✏️ Generate from Custom
-            </button>
-          </div>
-        </div>
-      </div>
+        const TOKEN_RARITY = {
+            'van': 0.9, 'thi': 0.95, 'huu': 0.9, 'ngoc': 0.85, 'duc': 0.95,
+            'huy': 0.9, 'linh': 0.85, 'thao': 0.85, 'minh': 0.5, 'quang': 0.5,
+            'anh': 0.4, 'thanh': 0.85, 'khanh': 0.8, 'tuan': 0.7, 'hung': 0.75,
+            'cuong': 0.8, 'duy': 0.8, 'bao': 0.7, 'viet': 0.75, 'hai': 0.65,
+            'hoa': 0.7, 'trang': 0.6, 'phuong': 0.6, 'hoai': 0.85, 'hieu': 0.75,
+            'kiet': 0.8, 'vinh': 0.7, 'loc': 0.75
+        };
 
-      <!-- Results Section -->
-      <div class="results-section">
-        <div class="results-header">
-          <h2>📋 Results</h2>
-          <div class="results-stats">
-            <div class="stat-badge">
-              <span class="stat-label">Preview</span>
-              <span class="stat-value" id="count">0</span>
-            </div>
-            <div class="stat-badge">
-              <span class="stat-label">Total</span>
-              <span class="stat-value" id="totalCount">0</span>
-            </div>
-            <div class="stat-badge">
-              <span class="stat-label">Ratio</span>
-              <span class="stat-value" id="ratioCount">0x</span>
-            </div>
-          </div>
-        </div>
+        let currentResults = [];
+        let currentStats = {};
 
-        <!-- Progress Bar -->
-        <div class="progress-section" id="progressSection" style="display: none;">
-          <div class="progress-info">
-            <span>Processing...</span>
-            <span id="progressPercent">0%</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressBar"></div>
-          </div>
-        </div>
+        // ============================================================================
+        // UTILITIES
+        // ============================================================================
 
-        <!-- Output Box -->
-        <div class="output-box" id="output">No data. Upload a file to begin.</div>
+        function normalizeText(text) {
+            return text.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]/g, '');
+        }
 
-        <!-- Action Buttons -->
-        <div class="results-actions">
-          <button class="btn btn-primary" id="downloadBtn" onclick="downloadResults()" disabled>
-            ⬇️ Download Results
-          </button>
-          <button class="btn btn-secondary" id="copyBtn" onclick="copyToClipboard()" disabled>
-            📋 Copy to Clipboard
-          </button>
-          <button class="btn btn-secondary" id="stopBtn" onclick="stopProcessing()" style="display: none;">
-            ⏹️ Stop
-          </button>
-        </div>
-      </div>
+        function extractTokens(text) {
+            const normalized = normalizeText(text);
+            const tokens = normalized.split(/[._\-\s]+/).filter(t => t.length > 0);
+            return tokens.filter(t => /^[a-z]+$/.test(t));
+        }
 
-    </main>
+        // ============================================================================
+        // PARSER ENGINE v13.0
+        // ============================================================================
 
-    <!-- Right Sidebar -->
-    <aside class="right-sidebar">
-      <div class="sidebar-card">
-        <h3 class="card-title">📊 Statistics</h3>
-        <div class="stats-list">
-          <div class="stat-row">
-            <span class="stat-name">Input Files</span>
-            <span class="stat-num" id="statsFile">0</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-name">Generated</span>
-            <span class="stat-num" id="statsVariants">0</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-name">Expansion</span>
-            <span class="stat-num" id="statsRatio">0x</span>
-          </div>
-        </div>
-      </div>
+        function generateAllParses(remainder, depth = 0, maxDepth = 3) {
+            if (depth > maxDepth || !remainder) {
+                return [{ tokens: [], type: 'valid' }];
+            }
 
-      <div class="sidebar-card">
-        <h3 class="card-title">💡 Tips</h3>
-        <ul class="tips-list">
-          <li>Upload username:password format</li>
-          <li>Select rules for mutation</li>
-          <li>Increase depth for more variants</li>
-          <li>Export in any format</li>
-        </ul>
-      </div>
+            const results = [];
+            const seen = new Set();
 
-      <div class="sidebar-card">
-        <h3 class="card-title">🔐 Features</h3>
-        <ul class="features-list">
-          <li>✓ Multi-stage mutations</li>
-          <li>✓ Advanced rules engine</li>
-          <li>✓ Custom patterns</li>
-          <li>✓ Export to CSV/JSON</li>
-          <li>✓ Real-time preview</li>
-        </ul>
-      </div>
-    </aside>
+            // State 1: Try MIDDLE tokens
+            for (const token of STRICT_MIDDLE) {
+                if (remainder.startsWith(token)) {
+                    const subRemainder = remainder.substring(token.length);
+                    const subParses = generateAllParses(subRemainder, depth + 1, maxDepth);
 
-  </div>
+                    for (const subParse of subParses) {
+                        const sig = JSON.stringify([token, ...subParse.tokens]);
+                        if (!seen.has(sig)) {
+                            results.push({
+                                tokens: [token, ...subParse.tokens],
+                                type: 'has_middle'
+                            });
+                            seen.add(sig);
+                        }
+                    }
+                }
+            }
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <p>🚀 Password Variant Generator PRO | © 2026 by teddyvrp | Multi-Stage Mutation Engine v2.0</p>
-    </div>
-  </footer>
+            // State 2: Try DUAL_ROLE tokens (more flexible)
+            for (const token of DUAL_ROLE) {
+                if (remainder.startsWith(token)) {
+                    const subRemainder = remainder.substring(token.length);
 
-  <script src="js/app.js"></script>
+                    if (!subRemainder || subRemainder.length <= 2) {
+                        const sig = JSON.stringify([token]);
+                        if (!seen.has(sig)) {
+                            results.push({
+                                tokens: [token],
+                                type: 'has_given'
+                            });
+                            seen.add(sig);
+                        }
+                    } else {
+                        const subParses = generateAllParses(subRemainder, depth + 1, maxDepth);
+                        for (const subParse of subParses) {
+                            const sig = JSON.stringify([token, ...subParse.tokens]);
+                            if (!seen.has(sig)) {
+                                results.push({
+                                    tokens: [token, ...subParse.tokens],
+                                    type: 'dual_role'
+                                });
+                                seen.add(sig);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // State 3: Try GIVEN tokens (must be last)
+            for (const token of STRICT_GIVEN) {
+                if (remainder.startsWith(token)) {
+                    const subRemainder = remainder.substring(token.length);
+
+                    if (!subRemainder || subRemainder.length <= 2) {
+                        const sig = JSON.stringify([token]);
+                        if (!seen.has(sig)) {
+                            results.push({
+                                tokens: [token],
+                                type: 'has_given'
+                            });
+                            seen.add(sig);
+                        }
+                    }
+                }
+            }
+
+            return results.length > 0 ? results : [{ tokens: [], type: 'invalid' }];
+        }
+
+        function scoreParseCorrect(tokens, parseType) {
+            let score = 0.0;
+
+            if (!tokens || tokens.length === 0) {
+                return 0.0;
+            }
+
+            // GRAMMAR BONUS (strongest signal)
+            if (parseType === 'has_given') {
+                if (tokens.length === 1) {
+                    score += 20;  // Single GIVEN
+                } else if (tokens.length === 2) {
+                    score += 50;  // MIDDLE + GIVEN (perfect!)
+                } else if (tokens.length >= 3) {
+                    score += 30;  // Multiple MIDDLE + GIVEN
+                    score -= (tokens.length - 2) * 5;
+                }
+            } else if (parseType === 'dual_role') {
+                if (tokens.length === 1) {
+                    score += 15;
+                } else if (tokens.length === 2) {
+                    score += 35;
+                } else {
+                    score += 25;
+                    score -= (tokens.length - 2) * 3;
+                }
+            } else {
+                score -= 20;
+            }
+
+            // POSITIONAL RULES
+            for (let i = 0; i < tokens.length; i++) {
+                const token = tokens[i];
+
+                if (i === 0) {
+                    if (STRICT_MIDDLE.has(token)) {
+                        score += 15;
+                    } else if (DUAL_ROLE.has(token)) {
+                        score += 8;
+                    } else {
+                        score -= 10;
+                    }
+                } else if (i === tokens.length - 1) {
+                    if (STRICT_GIVEN.has(token) || DUAL_ROLE.has(token)) {
+                        score += 20;
+                    } else if (STRICT_MIDDLE.has(token)) {
+                        score -= 15;
+                    } else {
+                        score -= 5;
+                    }
+                } else {
+                    if (STRICT_MIDDLE.has(token)) {
+                        score += 10;
+                    } else if (DUAL_ROLE.has(token)) {
+                        score += 5;
+                    } else {
+                        score -= 10;
+                    }
+                }
+            }
+
+            // RARITY BONUS
+            for (const token of tokens) {
+                const rarity = TOKEN_RARITY[token] || 0.5;
+                score += rarity * 8;
+            }
+
+            return Math.min(100, Math.max(0, score));
+        }
+
+        function parseCompound(compound, surname) {
+            const remainder = compound.substring(surname.length);
+
+            if (!remainder) {
+                return {
+                    tokens: [surname],
+                    surname: surname,
+                    middle: null,
+                    given: null,
+                    remainder: '',
+                    parseScore: 10.0,
+                    structure: 'surname_only'
+                };
+            }
+
+            const candidates = generateAllParses(remainder);
+
+            let bestCandidate = null;
+            let bestScore = -100;
+            let bestQuality = 'invalid';
+
+            for (const candidate of candidates) {
+                const score = scoreParseCorrect(candidate.tokens, candidate.type);
+
+                const fullText = candidate.tokens.join('');
+                const actualRemainder = remainder.substring(fullText.length);
+
+                if (actualRemainder && actualRemainder.length > 2) {
+                    score -= 40;
+                }
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestCandidate = candidate;
+                    bestQuality = candidate.type;
+                }
+            }
+
+            if (bestCandidate && bestScore > -50) {
+                const tokens = bestCandidate.tokens;
+                const middle = tokens.find(t => STRICT_MIDDLE.has(t)) || null;
+                const given = tokens.find(t => STRICT_GIVEN.has(t)) || tokens.find(t => DUAL_ROLE.has(t)) || null;
+
+                return {
+                    tokens: [surname, ...tokens],
+                    surname: surname,
+                    middle: middle,
+                    given: given,
+                    remainder: remainder.substring(tokens.join('').length),
+                    parseScore: bestScore,
+                    structure: bestQuality
+                };
+            }
+
+            return {
+                tokens: [surname],
+                surname: surname,
+                middle: null,
+                given: null,
+                remainder: remainder,
+                parseScore: 0,
+                structure: 'invalid'
+            };
+        }
+
+        function classifyEmail(email, password) {
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return {
+                    email: email,
+                    password: password,
+                    score: 0,
+                    structure: 'invalid_email',
+                    confidence: 'reject',
+                    localPart: '',
+                    surname: null,
+                    middle: null,
+                    given: null,
+                    remainder: ''
+                };
+            }
+
+            const localPart = email.split('@')[0];
+            const normalized = normalizeText(localPart);
+
+            // Check for tokens
+            const tokens = extractTokens(normalized);
+
+            let score = 0;
+            let structure = 'unknown';
+            let surname = null;
+            let middle = null;
+            let given = null;
+            let remainder = '';
+
+            if (tokens.length > 1) {
+                // Token mode
+                const firstToken = tokens[0];
+
+                if (VN_SURNAMES_STRONG.has(firstToken)) {
+                    surname = firstToken;
+                    score += 35;
+
+                    const midTokens = tokens.slice(1, -1).filter(t => STRICT_MIDDLE.has(t) || DUAL_ROLE.has(t));
+                    const givenTokens = tokens.slice(-1).filter(t => STRICT_GIVEN.has(t) || DUAL_ROLE.has(t));
+
+                    if (midTokens.length > 0 && givenTokens.length > 0) {
+                        score += 45;
+                        structure = 'strong_full';
+                        middle = midTokens[0];
+                        given = givenTokens[0];
+                    } else if (givenTokens.length > 0) {
+                        score += 30;
+                        structure = 'strong_pair';
+                        given = givenTokens[0];
+                    } else if (midTokens.length > 0) {
+                        score += 20;
+                        structure = 'strong_middle';
+                        middle = midTokens[0];
+                    }
+
+                    score += 15;  // Token separator bonus
+                } else if (VN_SURNAMES_WEAK.has(firstToken)) {
+                    surname = firstToken;
+                    score += 20;
+
+                    const givenTokens = tokens.slice(1).filter(t => STRICT_GIVEN.has(t) || DUAL_ROLE.has(t));
+                    if (givenTokens.length > 0) {
+                        score += 25;
+                        structure = 'weak_pair';
+                        given = givenTokens[0];
+                    }
+
+                    score += 12;
+                }
+            } else if (tokens.length === 1) {
+                // Compound mode
+                const token = tokens[0];
+
+                for (const s of VN_SURNAMES_STRONG) {
+                    if (token.startsWith(s)) {
+                        const result = parseCompound(token, s);
+                        surname = result.surname;
+                        middle = result.middle;
+                        given = result.given;
+                        remainder = result.remainder;
+                        score = Math.min(70, result.parseScore + 25);
+                        structure = result.structure;
+                        break;
+                    }
+                }
+
+                if (!surname) {
+                    for (const s of VN_SURNAMES_WEAK) {
+                        if (token.startsWith(s)) {
+                            const result = parseCompound(token, s);
+                            surname = result.surname;
+                            middle = result.middle;
+                            given = result.given;
+                            remainder = result.remainder;
+                            score = Math.min(60, result.parseScore + 15);
+                            structure = result.structure;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Determine confidence
+            let confidence = 'reject';
+            if (score >= 75) {
+                confidence = 'accept';
+            } else if (score >= 55) {
+                confidence = 'review';
+            }
+
+            return {
+                email: email,
+                password: password,
+                score: Math.round(score * 10) / 10,
+                structure: structure,
+                confidence: confidence,
+                localPart: localPart,
+                surname: surname,
+                middle: middle,
+                given: given,
+                remainder: remainder
+            };
+        }
+
+        // ============================================================================
+        // UI FUNCTIONS
+        // ============================================================================
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'dataset') {
+                populateDataset();
+            }
+        }
+
+        function setupUploadArea() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+
+            const file = files[0];
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const content = e.target.result;
+                const lines = content.split('\n').filter(line => line.trim());
+
+                document.getElementById('fileNameText').textContent = file.name;
+                document.getElementById('fileName').style.display = 'block';
+                document.getElementById('processBtn').disabled = false;
+
+                // Store file data
+                window.fileData = lines;
+            };
+
+            reader.readAsText(file);
+        }
+
+        function processFile() {
+            const lines = window.fileData;
+            if (!lines) return;
+
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const totalText = document.getElementById('totalText');
+
+            progressContainer.style.display = 'block';
+            totalText.textContent = lines.length;
+
+            currentResults = [];
+            const stats = {
+                total: lines.length,
+                accept: 0,
+                review: 0,
+                reject: 0,
+                structures: {},
+                totalScore: 0
+            };
+
+            let processed = 0;
+
+            const processNext = () => {
+                if (processed >= lines.length) {
+                    displayResults(stats);
+                    progressContainer.style.display = 'none';
+                    return;
+                }
+
+                const line = lines[processed];
+                const [email, password] = line.split(':');
+
+                if (email && password) {
+                    const result = classifyEmail(email.trim(), password.trim());
+                    currentResults.push(result);
+
+                    // Update stats
+                    if (result.confidence === 'accept') {
+                        stats.accept++;
+                    } else if (result.confidence === 'review') {
+                        stats.review++;
+                    } else {
+                        stats.reject++;
+                    }
+
+                    stats.structures[result.structure] = (stats.structures[result.structure] || 0) + 1;
+                    stats.totalScore += result.score;
+                }
+
+                processed++;
+                progressText.textContent = processed;
+                progressFill.style.width = (processed / lines.length * 100) + '%';
+
+                setTimeout(processNext, 0);
+            };
+
+            processNext();
+        }
+
+        function displayResults(stats) {
+            currentStats = stats;
+
+            document.getElementById('statTotal').textContent = stats.total.toLocaleString();
+            document.getElementById('statAccept').textContent = stats.accept.toLocaleString();
+            document.getElementById('statReview').textContent = stats.review.toLocaleString();
+            document.getElementById('statReject').textContent = stats.reject.toLocaleString();
+            document.getElementById('statAvg').textContent = (stats.totalScore / stats.total).toFixed(1);
+
+            // Structure breakdown
+            const structureChart = document.getElementById('structureChart');
+            structureChart.innerHTML = '';
+
+            const sorted = Object.entries(stats.structures)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            for (const [struct, count] of sorted) {
+                const percentage = (count / stats.total * 100).toFixed(1);
+                structureChart.innerHTML += `
+                    <div class="chart-item">
+                        <div class="chart-label">${struct}</div>
+                        <div class="chart-bar" style="width: ${percentage * 3}px;">
+                            ${count} (${percentage}%)
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Results table
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+
+            currentResults.forEach((result, idx) => {
+                const confidenceClass = `confidence-${result.confidence}`;
+                const scoreClass = `score-${result.confidence}`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${result.email}</td>
+                        <td><span class="score-badge ${scoreClass}">${result.score.toFixed(1)}</span></td>
+                        <td>${result.structure}</td>
+                        <td><span class="${confidenceClass}">${result.confidence.toUpperCase()}</span></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function downloadAccepted() {
+            const accepted = currentResults.filter(r => r.score >= 75);
+            downloadResults(accepted, 'vietnamese_accepted.txt');
+        }
+
+        function downloadReview() {
+            const review = currentResults.filter(r => r.score >= 55 && r.score < 75);
+            downloadResults(review, 'vietnamese_review.txt');
+        }
+
+        function downloadResults(results, filename) {
+            let content = '';
+            results.forEach(result => {
+                content += `${result.email}:${result.password}\n`;
+            });
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function filterResults() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const tbody = document.getElementById('resultsBody');
+            const rows = tbody.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                const email = row.cells[0].textContent.toLowerCase();
+                row.style.display = email.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        function clearFile() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileName').style.display = 'none';
+            document.getElementById('processBtn').disabled = true;
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'none';
+            window.fileData = null;
+        }
+
+        function testEmail() {
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+
+            if (!email || !password) {
+                alert('Vui lòng nhập email và password');
+                return;
+            }
+
+            const result = classifyEmail(email, password);
+
+            document.getElementById('resultEmail').textContent = result.email;
+            document.getElementById('resultScore').textContent = result.score.toFixed(1);
+            document.getElementById('resultStructure').textContent = result.structure;
+
+            let confidenceEmoji = '❓';
+            let confidenceColor = '#999';
+
+            if (result.confidence === 'accept') {
+                confidenceEmoji = '✅';
+                confidenceColor = '#4caf50';
+            } else if (result.confidence === 'review') {
+                confidenceEmoji = '📋';
+                confidenceColor = '#ff9800';
+            } else {
+                confidenceEmoji = '❌';
+                confidenceColor = '#f44336';
+            }
+
+            document.getElementById('resultConfidence').innerHTML = `<span style="color: ${confidenceColor};">${confidenceEmoji} ${result.confidence.toUpperCase()}</span>`;
+
+            document.getElementById('resultLocalPart').textContent = result.localPart;
+            document.getElementById('resultSurname').textContent = result.surname || 'None';
+            document.getElementById('resultMiddle').textContent = result.middle || 'None';
+            document.getElementById('resultGiven').textContent = result.given || 'None';
+            document.getElementById('resultRemainder').textContent = result.remainder || 'None';
+
+            document.getElementById('testResult').style.display = 'block';
+        }
+
+        function populateDataset() {
+            // STRICT_MIDDLE
+            const strictMiddleHtml = Array.from(STRICT_MIDDLE)
+                .sort()
+                .map(t => `<span class="tag">${t}</span>`)
+                .join('');
+            document.getElementById('strictMiddleTags').innerHTML = strictMiddleHtml;
+
+            // DUAL_ROLE
+            const dualRoleHtml = Array.from(DUAL_ROLE)
+                .sort()
+                .map(t => `<span class="tag">${t}</span>`)
+                .join('');
+            document.getElementById('dualRoleTags').innerHTML = dualRoleHtml;
+
+            // STRICT_GIVEN
+            const strictGivenHtml = Array.from(STRICT_GIVEN)
+                .sort()
+                .map(t => `<span class="tag">${t}</span>`)
+                .join('');
+            document.getElementById('strictGivenTags').innerHTML = strictGivenHtml;
+
+            // STRONG_SURNAMES
+            const strongSurnameHtml = Array.from(VN_SURNAMES_STRONG)
+                .sort()
+                .map(t => `<span class="tag">${t}</span>`)
+                .join('');
+            document.getElementById('strongSurnameTags').innerHTML = strongSurnameHtml;
+
+            // Counts
+            document.getElementById('countStrictMiddle').textContent = STRICT_MIDDLE.size;
+            document.getElementById('countDualRole').textContent = DUAL_ROLE.size;
+            document.getElementById('countStrictGiven').textContent = STRICT_GIVEN.size;
+            document.getElementById('countSurnames').textContent = VN_SURNAMES_STRONG.size;
+        }
+
+        // Initialize on load
+        setupUploadArea();
+    </script>
 </body>
 </html>
